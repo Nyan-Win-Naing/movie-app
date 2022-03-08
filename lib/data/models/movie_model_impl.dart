@@ -57,8 +57,8 @@ class MovieModelImpl extends MovieModel {
         return movie;
       }).toList();
       mMovieDao.saveMovies(nowPlayingMovies);
-      mNowPlayingMovies = nowPlayingMovies;
-      notifyListeners();
+      // mNowPlayingMovies = nowPlayingMovies;
+      // notifyListeners();
     });
   }
 
@@ -72,8 +72,8 @@ class MovieModelImpl extends MovieModel {
         return movie;
       }).toList();
       mMovieDao.saveMovies(popularMovies);
-      this.popularMovies = popularMovies;
-      notifyListeners();
+      // this.popularMovies = popularMovies;
+      // notifyListeners();
     });
   }
 
@@ -88,8 +88,8 @@ class MovieModelImpl extends MovieModel {
       }).toList();
 
       mMovieDao.saveMovies(topRatedMovies);
-      this.topRatedMovies = topRatedMovies;
-      notifyListeners();
+      // this.topRatedMovies = topRatedMovies;
+      // notifyListeners();
     });
   }
 
@@ -124,20 +124,26 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  void getCreditsByMovie(int movieId) {
-    _dataAgent.getCreditsByMovie(movieId).then((castAndCrew) {
-      cast = castAndCrew.first;
-      crew = castAndCrew[1];
-      notifyListeners();
-    });
+  Future<List<List<ActorVO>?>> getCreditsByMovie(int movieId) {
+    // _dataAgent.getCreditsByMovie(movieId).then((castAndCrew) {
+    //   cast = castAndCrew.first;
+    //   crew = castAndCrew[1];
+    //   notifyListeners();
+    // });
+    return _dataAgent.getCreditsByMovie(movieId);
   }
 
   @override
-  void getMovieDetails(int movieId) {
-    _dataAgent.getMovieDetails(movieId).then((movie) async {
+  Future<MovieVO> getMovieDetails(int movieId) {
+    // _dataAgent.getMovieDetails(movieId).then((movie) async {
+    //   mMovieDao.saveSingleMovie(movie);
+    //   movieDetails = movie;
+    //   notifyListeners();
+    //   return Future.value(movie);
+    // });
+
+    return _dataAgent.getMovieDetails(movieId).then((movie) async {
       mMovieDao.saveSingleMovie(movie);
-      movieDetails = movie;
-      notifyListeners();
       return Future.value(movie);
     });
   }
@@ -158,10 +164,10 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  void getMovieDetailsFromDatabase(int movieId) {
-    // Future.value(mMovieDao.getMovieById(movieId));
-    movieDetails = mMovieDao.getMovieById(movieId);
-    notifyListeners();
+  Future<MovieVO> getMovieDetailsFromDatabase(int movieId) {
+    return Future.value(mMovieDao.getMovieById(movieId));
+    // movieDetails = mMovieDao.getMovieById(movieId);
+    // notifyListeners();
   }
 
   // @override

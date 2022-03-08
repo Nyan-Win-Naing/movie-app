@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/blocs/movie_details_bloc.dart';
 import 'package:movie_app/data/models/movie_model.dart';
 import 'package:movie_app/data/models/movie_model_impl.dart';
 import 'package:movie_app/data/vos/actor_vo.dart';
@@ -13,80 +14,123 @@ import 'package:movie_app/widgets/rating_view.dart';
 import 'package:movie_app/widgets/title_text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class MovieDetailsPage extends StatelessWidget {
-  // final int movieId;
-  //
-  // MovieDetailsPage({required this.movieId});
+class MovieDetailsPage extends StatefulWidget {
+  final int movieId;
+
+  MovieDetailsPage({required this.movieId});
+
+  @override
+  State<MovieDetailsPage> createState() => _MovieDetailsPageState();
+}
+
+class _MovieDetailsPageState extends State<MovieDetailsPage> {
+  MovieDetailsBloc? _bloc;
+
+  @override
+  void initState() {
+    _bloc = MovieDetailsBloc(widget.movieId);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bloc?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScopedModelDescendant<MovieModelImpl>(
-        builder: (BuildContext context, Widget? child, MovieModelImpl model) {
-          return Container(
-            color: HOME_SCREEN_BACKGROUND_COLOR,
-            child: CustomScrollView(
-              slivers: [
-                MovieDetailsSliverAppBarView(
-                      () => Navigator.pop(context),
-                  movie: model.movieDetails,
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: MARGIN_MEDIUM_2,
-                        ),
-                        child: TrailerSection(
-                          genreList: model.movieDetails?.getGenreListAsStringList() ?? [],
-                          storyLine: model.movieDetails?.overview ?? "",
-                        ),
-                      ),
-                      const SizedBox(
-                        height: MARGIN_LARGE,
-                      ),
-                      ActorsAndCreatorsSectionView(
-                        MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
-                        "",
-                        seeMoreButtonVisibility: false,
-                        actorsList: model.cast,
-                      ),
-                      const SizedBox(
-                        height: MARGIN_LARGE,
-                      ),
-                      Container(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-                        child: AboutFilmSectionView(
-                          movieVO: model.movieDetails,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: MARGIN_LARGE,
-                      ),
-                      ActorsAndCreatorsSectionView(
-                        MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-                        MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-                        actorsList: model.crew,
-                      ),
-                    ],
+      body: StreamBuilder(
+        stream: _bloc?.movieStreamController.stream.asBroadcastStream(),
+        builder: (BuildContext context, AsyncSnapshot<MovieVO> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              color: HOME_SCREEN_BACKGROUND_COLOR,
+              child: CustomScrollView(
+                slivers: [
+                  MovieDetailsSliverAppBarView(
+                    () => Navigator.pop(context),
+                    movie: snapshot.data,
                   ),
-                ),
-              ],
-            ),
-          );
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: MARGIN_MEDIUM_2,
+                          ),
+                          child: TrailerSection(
+                            genreList:
+                                snapshot.data?.getGenreListAsStringList() ?? [],
+                            storyLine: snapshot.data?.overview ?? "",
+                          ),
+                        ),
+                        const SizedBox(
+                          height: MARGIN_LARGE,
+                        ),
+                        StreamBuilder(
+                          stream: _bloc?.actorsStreamController.stream.asBroadcastStream(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<ActorVO>> snapshot) {
+                            return ActorsAndCreatorsSectionView(
+                              MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
+                              "",
+                              seeMoreButtonVisibility: false,
+                              actorsList: snapshot.data,
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          height: MARGIN_LARGE,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: MARGIN_MEDIUM_2),
+                          child: AboutFilmSectionView(
+                            movieVO: snapshot.data,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: MARGIN_LARGE,
+                        ),
+                        StreamBuilder(
+                          stream: _bloc?.creatorsStreamController.stream.asBroadcastStream(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<ActorVO>> snapshot) {
+                            if (snapshot.hasData &&
+                                (snapshot.data?.isNotEmpty ?? false)) {
+                              print("Snapshot hsa data");
+                              return ActorsAndCreatorsSectionView(
+                                MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                                MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                                actorsList: snapshot.data,
+                              );
+                            } else {
+                              print("Snapshot does not have data");
+                              return Container();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
       ),
     );
   }
-
 }
 
 class AboutFilmSectionView extends StatelessWidget {
-
   final MovieVO? movieVO;
-
 
   AboutFilmSectionView({required this.movieVO});
 
@@ -115,14 +159,14 @@ class AboutFilmSectionView extends StatelessWidget {
         ),
         AboutFilmInfoView(
           "Production:",
-            movieVO?.getProductionCountriesAsCommaSeparatedString() ?? "",
+          movieVO?.getProductionCountriesAsCommaSeparatedString() ?? "",
         ),
         const SizedBox(
           height: MARGIN_MEDIUM_2,
         ),
         AboutFilmInfoView(
           "Premiere:",
-            movieVO?.releaseDate ?? "",
+          movieVO?.releaseDate ?? "",
         ),
         const SizedBox(
           height: MARGIN_MEDIUM_2,
@@ -276,7 +320,6 @@ class MovieDetailsScreenButtonView extends StatelessWidget {
 
 class StoryLineView extends StatelessWidget {
   final String storyLine;
-
 
   StoryLineView({required this.storyLine});
 
@@ -581,10 +624,10 @@ class MovieDetailsAppBarImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.network(
-      imageUrl == "" ? "https://cdn-icons-png.flaticon.com/512/248/248961.png" :
-      "$IMAGE_BASE_URL$imageUrl",
+      imageUrl == ""
+          ? "https://cdn-icons-png.flaticon.com/512/248/248961.png"
+          : "$IMAGE_BASE_URL$imageUrl",
       fit: BoxFit.cover,
     );
   }
-
 }

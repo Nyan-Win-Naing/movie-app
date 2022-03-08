@@ -34,6 +34,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -173,8 +179,8 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(
           builder: (context) => MovieDetailsPage(
-              // movieId: movieId,
-              ),
+            movieId: movieId,
+          ),
         ),
       );
     }
