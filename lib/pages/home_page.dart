@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/blocs/home_bloc.dart';
 import 'package:movie_app/data/models/movie_model.dart';
 import 'package:movie_app/data/models/movie_model_impl.dart';
 import 'package:movie_app/data/vos/actor_vo.dart';
@@ -19,7 +20,18 @@ import 'package:movie_app/widgets/title_text_with_see_more_view.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  HomeBloc _bloc = HomeBloc();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,57 +68,72 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScopedModelDescendant<MovieModelImpl>(
-                builder: (BuildContext context, Widget? child, MovieModelImpl model) {
+              StreamBuilder(
+                stream: _bloc.mPopularMoviesListStreamController.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<MovieVO>> snapshot) {
                   return BannerSectionView(
-                    movieList: model.popularMovies?.take(5).toList(),
+                    movieList: snapshot.data?.take(8).toList() ?? [],
                   );
                 },
-
               ),
               const SizedBox(height: MARGIN_LARGE),
-              ScopedModelDescendant<MovieModelImpl>(
-                builder: (BuildContext context, Widget? child, MovieModelImpl model) {
+              StreamBuilder(
+                stream: _bloc.mNowPlayingStreamController.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<MovieVO>> snapshot) {
                   return BestPopularMoviesAndSerialsSectionView(
                     onTapMovie: (movieId) =>
-                        _navigateToMovieDetailsScreen(context, movieId, model),
-                    nowPlayingMovie: model.mNowPlayingMovies,
+                        _navigateToMovieDetailsScreen(context, movieId),
+                    nowPlayingMovie: snapshot.data,
                   );
                 },
               ),
               const SizedBox(height: MARGIN_LARGE),
               CheckMovieShowTimesSectionView(),
               const SizedBox(height: MARGIN_LARGE),
-              ScopedModelDescendant<MovieModelImpl>(
-                builder: (BuildContext context, Widget? child, MovieModelImpl model) {
-                  return GenreSectionView(
-                    onTapMovie: (movieId) =>
-                        _navigateToMovieDetailsScreen(context, movieId, model),
-                    genreList: model.genres,
-                    moviesByGenre: model.moviesByGenre,
-                    onChooseGenre: (genreId) {
-                      if (genreId != null) {
-                        model.getMoviesByGenre(genreId);
-                      }
+              StreamBuilder(
+                stream: _bloc.mGenreListStreamController.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<GenreVO>> genreSnapShot) {
+                  return StreamBuilder(
+                    stream: _bloc.mMoviesByGenreListStreamController.stream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<MovieVO>> moviesByGenreSnapShot) {
+                      return GenreSectionView(
+                        onTapMovie: (movieId) =>
+                            _navigateToMovieDetailsScreen(context, movieId),
+                        genreList: genreSnapShot.data,
+                        moviesByGenre: moviesByGenreSnapShot.data,
+                        onChooseGenre: (genreId) {
+                          if (genreId != null) {
+                            _bloc.onTapGenre(genreId);
+                          }
+                        },
+                      );
                     },
                   );
                 },
               ),
               const SizedBox(height: MARGIN_LARGE),
-              ScopedModelDescendant<MovieModelImpl>(
-                builder: (BuildContext context, Widget? child, MovieModelImpl model) {
+              StreamBuilder(
+                stream: _bloc.mShowCaseMovieListStreamController.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<MovieVO>> snapshot) {
                   return ShowcasesSection(
-                    topRatedMovies: model.topRatedMovies,
+                    topRatedMovies: snapshot.data,
                   );
                 },
               ),
               const SizedBox(height: MARGIN_LARGE),
-              ScopedModelDescendant<MovieModelImpl>(
-                builder: (BuildContext context, Widget? child, MovieModelImpl model) {
+              StreamBuilder(
+                stream: _bloc.mActorsStreamController.stream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<ActorVO>> snapshot) {
                   return ActorsAndCreatorsSectionView(
                     BEST_ACTORS_TITLE,
                     BEST_ACTORS_SEE_MORE,
-                    actorsList: model.actors,
+                    actorsList: snapshot.data,
                   );
                 },
               ),
@@ -117,17 +144,37 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _navigateToMovieDetailsScreen(BuildContext context, int? movieId, MovieModelImpl model,) {
-    model.getMovieDetails(movieId ?? 0);
-    model.getMovieDetailsFromDatabase(movieId ?? 0);
-    model.getCreditsByMovie(movieId ?? 0);
+  // void _navigateToMovieDetailsScreen(
+  //   BuildContext context,
+  //   int? movieId,
+  //   MovieModelImpl model,
+  // ) {
+  //   model.getMovieDetails(movieId ?? 0);
+  //   model.getMovieDetailsFromDatabase(movieId ?? 0);
+  //   model.getCreditsByMovie(movieId ?? 0);
+  //   if (movieId != null) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => MovieDetailsPage(
+  //             // movieId: movieId,
+  //             ),
+  //       ),
+  //     );
+  //   }
+  // }
+
+  void _navigateToMovieDetailsScreen(
+    BuildContext context,
+    int? movieId,
+  ) {
     if (movieId != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MovieDetailsPage(
-            // movieId: movieId,
-          ),
+              // movieId: movieId,
+              ),
         ),
       );
     }
@@ -365,7 +412,8 @@ class _BannerSectionViewState extends State<BannerSectionView> {
         const SizedBox(height: MARGIN_MEDIUM_2),
         DotsIndicator(
           // dotsCount: widget.movieList?.length ?? 1,
-          dotsCount: (widget.movieList?.length == 0) ? 1
+          dotsCount: (widget.movieList?.length == 0)
+              ? 1
               : widget.movieList?.length ?? 1,
           position: _position,
           decorator: const DotsDecorator(
