@@ -25,15 +25,16 @@ class MovieDetailsPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MovieDetailsBloc(movieId),
       child: Scaffold(
-        body: Consumer<MovieDetailsBloc>(
-          builder: (context, bloc, child) => Container(
+        body: Selector<MovieDetailsBloc, MovieVO?>(
+          selector: (context, bloc) => bloc.mMovie,
+          builder: (context, movie, child) => Container(
             color: HOME_SCREEN_BACKGROUND_COLOR,
-            child: (bloc.mMovie != null)
+            child: (movie != null)
                 ? CustomScrollView(
                     slivers: [
                       MovieDetailsSliverAppBarView(
                         () => Navigator.pop(context),
-                        movie: bloc.mMovie,
+                        movie: movie,
                       ),
                       SliverList(
                         delegate: SliverChildListDelegate(
@@ -44,19 +45,22 @@ class MovieDetailsPage extends StatelessWidget {
                               ),
                               child: TrailerSection(
                                 genreList:
-                                    bloc.mMovie?.getGenreListAsStringList() ??
-                                        [],
-                                storyLine: bloc.mMovie?.overview ?? "",
+                                    movie.getGenreListAsStringList(),
+                                storyLine: movie.overview ?? "",
                               ),
                             ),
                             const SizedBox(
                               height: MARGIN_LARGE,
                             ),
-                            ActorsAndCreatorsSectionView(
-                              MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
-                              "",
-                              seeMoreButtonVisibility: false,
-                              actorsList: bloc.mActorsList,
+                            Selector<MovieDetailsBloc, List<ActorVO>>(
+                              selector: (context, bloc) => bloc.mActorsList ?? [],
+                              builder: (context, actorList, child) =>
+                                  ActorsAndCreatorsSectionView(
+                                    MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
+                                    "",
+                                    seeMoreButtonVisibility: false,
+                                    actorsList: actorList,
+                                  ),
                             ),
                             const SizedBox(
                               height: MARGIN_LARGE,
@@ -65,20 +69,25 @@ class MovieDetailsPage extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: MARGIN_MEDIUM_2),
                               child: AboutFilmSectionView(
-                                movieVO: bloc.mMovie,
+                                movieVO: movie,
                               ),
                             ),
                             const SizedBox(
                               height: MARGIN_LARGE,
                             ),
-                            (bloc.mCreatorsList != null &&
-                                    (bloc.mCreatorsList?.isNotEmpty ?? false))
-                                ? ActorsAndCreatorsSectionView(
-                                    MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-                                    MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-                                    actorsList: bloc.mCreatorsList,
-                                  )
-                                : Container(),
+                            Selector<MovieDetailsBloc, List<ActorVO>>(
+                              selector: (context, bloc) => bloc.mCreatorsList ?? [],
+                              builder: (context, creatorList, child) {
+                                return (creatorList != null &&
+                                    creatorList.isNotEmpty)
+                                    ? ActorsAndCreatorsSectionView(
+                                  MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                                  MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                                  actorsList: creatorList,
+                                )
+                                    : Container();
+                              },
+                            ),
                           ],
                         ),
                       ),

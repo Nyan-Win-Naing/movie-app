@@ -59,49 +59,61 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Consumer<HomeBloc>(
-                  builder: (context, bloc, child) => BannerSectionView(
-                    movieList: bloc.mPopularMoviesList?.take(8).toList() ?? [],
+                Selector<HomeBloc, List<MovieVO>>(
+                  selector: (context, bloc) => bloc.mNowPlayingMovieList ?? [],
+                  builder: (context, popularMovieList, child) =>
+                      BannerSectionView(
+                    movieList: popularMovieList.take(8).toList(),
                   ),
                 ),
                 const SizedBox(height: MARGIN_LARGE),
-                Consumer<HomeBloc>(
-                    builder: (context, bloc, child) =>
+                Selector<HomeBloc, List<MovieVO>>(
+                    selector: (context, bloc) =>
+                        bloc.mNowPlayingMovieList ?? [],
+                    builder: (context, nowPlayingMovieList, child) =>
                         BestPopularMoviesAndSerialsSectionView(
                           onTapMovie: (movieId) =>
                               _navigateToMovieDetailsScreen(context, movieId),
-                          nowPlayingMovie: bloc.mNowPlayingMovieList,
+                          nowPlayingMovie: nowPlayingMovieList,
                         )),
                 const SizedBox(height: MARGIN_LARGE),
                 CheckMovieShowTimesSectionView(),
                 const SizedBox(height: MARGIN_LARGE),
-                Consumer<HomeBloc>(
-                  builder: (context, bloc, child) => GenreSectionView(
-                    onTapMovie: (movieId) =>
-                        _navigateToMovieDetailsScreen(context, movieId),
-                    genreList: bloc.mGenreList,
-                    moviesByGenre: bloc.mMoviesByGenreList,
-                    onChooseGenre: (genreId) {
-                      if (genreId != null) {
-                        bloc.onTapGenre(genreId);
-                      }
-                    },
-                  )
-                ),
-                const SizedBox(height: MARGIN_LARGE),
-                Consumer<HomeBloc>(
-                  builder: (context, bloc, child) => ShowcasesSection(
-                    topRatedMovies: bloc.mShowCaseMovieList,
+                Selector<HomeBloc, List<GenreVO>>(
+                  selector: (context, bloc) => bloc.mGenreList ?? [],
+                  builder: (context, genreList, child) => Selector<HomeBloc, List<MovieVO>>(
+                    selector: (context, bloc) => bloc.mMoviesByGenreList ?? [],
+                    builder: (context, moviesByGenreList, child) => GenreSectionView(
+                      onTapMovie: (movieId) =>
+                          _navigateToMovieDetailsScreen(context, movieId),
+                      genreList: genreList,
+                      moviesByGenre: moviesByGenreList,
+                      onChooseGenre: (genreId) {
+                        if (genreId != null) {
+                          HomeBloc bloc = Provider.of<HomeBloc>(context, listen: false);
+                          bloc.onTapGenre(genreId);
+                        }
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: MARGIN_LARGE),
-                Consumer<HomeBloc>(
-                  builder: (context, bloc, child) => ActorsAndCreatorsSectionView(
-                    BEST_ACTORS_TITLE,
-                    BEST_ACTORS_SEE_MORE,
-                    actorsList: bloc.mActors,
-                  )
+                Selector<HomeBloc, List<MovieVO>>(
+                  selector: (context, bloc) => bloc.mShowCaseMovieList ?? [],
+                  builder: (context, showCaseMovieList, child) =>
+                      ShowcasesSection(
+                    topRatedMovies: showCaseMovieList,
+                  ),
                 ),
+                const SizedBox(height: MARGIN_LARGE),
+                Selector<HomeBloc, List<ActorVO>>(
+                    selector: (context, bloc) => bloc.mActors ?? [],
+                    builder: (context, actors, child) =>
+                        ActorsAndCreatorsSectionView(
+                          BEST_ACTORS_TITLE,
+                          BEST_ACTORS_SEE_MORE,
+                          actorsList: actors,
+                        )),
               ],
             ),
           ),
