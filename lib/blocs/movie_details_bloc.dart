@@ -1,40 +1,36 @@
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:movie_app/data/models/movie_model.dart';
 import 'package:movie_app/data/models/movie_model_impl.dart';
 import 'package:movie_app/data/vos/actor_vo.dart';
 import 'package:movie_app/data/vos/movie_vo.dart';
 
-class MovieDetailsBloc {
-  /// Stream Controllers
-  StreamController<MovieVO> movieStreamController = StreamController();
-  StreamController<List<ActorVO>> creatorsStreamController = StreamController();
-  StreamController<List<ActorVO>> actorsStreamController = StreamController();
+class MovieDetailsBloc extends ChangeNotifier {
+  /// State
+  MovieVO? mMovie;
+  List<ActorVO>? mActorsList;
+  List<ActorVO>? mCreatorsList;
 
-  /// Models
+  /// Model
   MovieModel mMovieModel = MovieModelImpl();
 
   MovieDetailsBloc(int movieId) {
     /// Movie Details
     mMovieModel.getMovieDetails(movieId).then((movie) {
-      movieStreamController.sink.add(movie);
+      this.mMovie = movie;
+      notifyListeners();
     });
 
     /// Movie Details Database
     mMovieModel.getMovieDetailsFromDatabase(movieId).then((movie) {
-      movieStreamController.sink.add(movie);
+      this.mMovie = movie;
+      notifyListeners();
     });
 
+    /// Credits
     mMovieModel.getCreditsByMovie(movieId).then((creditsList) {
-      print("Credits list in details bloc: $creditsList");
-      actorsStreamController.sink.add(creditsList.first ?? []);
-      creatorsStreamController.sink.add(creditsList[1] ?? []);
+      this.mActorsList = creditsList.first ?? [];
+      this.mCreatorsList = creditsList[1];
+      notifyListeners();
     });
-  }
-
-  void dispose() {
-    movieStreamController.close();
-    creatorsStreamController.close();
-    actorsStreamController.close();
   }
 }
