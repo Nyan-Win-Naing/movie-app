@@ -14,6 +14,9 @@ class HomeBloc extends ChangeNotifier {
   List<MovieVO>? mShowCaseMovieList;
   List<MovieVO>? mMoviesByGenreList;
 
+  /// Page
+  int pageForNowPlayingMovies = 1;
+
   /// Model
   MovieModel mMovieModel = MovieModelImpl();
 
@@ -91,6 +94,11 @@ class HomeBloc extends ChangeNotifier {
     }).catchError((error) {
       debugPrint(error.toString());
     });
+  }
+
+  void onNowPlayingMovieListEndReached() {
+    this.pageForNowPlayingMovies += 1;
+    mMovieModel.getNowPlayingMovies(pageForNowPlayingMovies);
   }
 
 }

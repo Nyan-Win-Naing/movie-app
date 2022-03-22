@@ -99,6 +99,7 @@ class MovieDetailsPage extends StatelessWidget {
                                 onTapMovie: (movieId) =>
                                     _navigateToMovieDetailsScreen(context, movieId),
                                 nowPlayingMovie: relatedMovies,
+                                onListEndReached: () {},
                               ),
                             ),
                           ],

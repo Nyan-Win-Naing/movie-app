@@ -77,6 +77,10 @@ class HomePage extends StatelessWidget {
                           onTapMovie: (movieId) =>
                               _navigateToMovieDetailsScreen(context, movieId),
                           nowPlayingMovie: nowPlayingMovieList,
+                          onListEndReached: () {
+                            var bloc = Provider.of<HomeBloc>(context, listen: false);
+                            bloc.onNowPlayingMovieListEndReached();
+                          },
                         )),
                 const SizedBox(height: MARGIN_LARGE),
                 CheckMovieShowTimesSectionView(),
@@ -206,6 +210,9 @@ class GenreSectionView extends StatelessWidget {
           child: HorizontalMovieListView(
             onTapMovie: (movieId) => this.onTapMovie(movieId),
             movieList: moviesByGenre,
+            onListEndReached: () {
+
+            },
           ),
         ),
       ],
