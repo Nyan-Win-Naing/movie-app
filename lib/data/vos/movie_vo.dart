@@ -163,6 +163,7 @@ class MovieVO {
   Map<String, dynamic> toJson() => _$MovieVOToJson(this);
 
   String getGenreListAsCommaSeparatedString() {
+    print("Genres: ${getGenreListAsStringList().join(",")}.........");
     return getGenreListAsStringList().join(",");
   }
 
@@ -171,13 +172,18 @@ class MovieVO {
   }
 
   String getProductionCountriesAsCommaSeparatedString() {
+
+    print("Production Countries: ${productionCountries
+        ?.map((country) => country.name ?? "")
+        .toList()
+        .join(",") ??
+        ""} .........");
     return productionCountries
             ?.map((country) => country.name ?? "")
             .toList()
             .join(",") ??
         "";
   }
-
 
   @override
   bool operator ==(Object other) =>
@@ -192,7 +198,6 @@ class MovieVO {
 
   @override
   String toString() {
-    return 'MovieVO{adult: $adult, backDropPath: $backDropPath,'
-        ' genreIds: $genreIds, id: $id, originalLanguage: $originalLanguage, originalTitle: $originalTitle, overview: $overview, popularity: $popularity, posterPath: $posterPath, releaseDate: $releaseDate, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount}';
+    return 'MovieVO{title: $title, genres: $genres, productionCountries: $productionCountries}';
   }
 }

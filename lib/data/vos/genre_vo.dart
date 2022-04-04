@@ -32,4 +32,9 @@ class GenreVO {
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode;
+
+  @override
+  String toString() {
+    return 'GenreVO{id: $id, name: $name}';
+  }
 }

@@ -21,4 +21,9 @@ class ProductionCountryVO {
       _$ProductionCountryVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductionCountryVOToJson(this);
+
+  @override
+  String toString() {
+    return 'ProductionCountryVO{iso31661: $iso31661, name: $name}';
+  }
 }
