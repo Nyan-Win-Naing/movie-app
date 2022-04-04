@@ -17,18 +17,18 @@ class ActorVOAdapter extends TypeAdapter<ActorVO> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ActorVO(
-      fields[0] as bool?,
-      fields[1] as int?,
-      (fields[2] as List?)?.cast<MovieVO>(),
-      fields[3] as double?,
-      fields[4] as String?,
-      fields[5] as String?,
-      fields[6] as String?,
-      fields[7] as String?,
-      fields[8] as int?,
-      fields[9] as String?,
-      fields[10] as String?,
-      fields[11] as int?,
+      adult: fields[0] as bool?,
+      id: fields[1] as int?,
+      knownFor: (fields[2] as List?)?.cast<MovieVO>(),
+      popularity: fields[3] as double?,
+      name: fields[4] as String?,
+      profilePath: fields[5] as String?,
+      knownForDepartment: fields[6] as String?,
+      originalName: fields[7] as String?,
+      castId: fields[8] as int?,
+      character: fields[9] as String?,
+      creditId: fields[10] as String?,
+      order: fields[11] as int?,
     );
   }
 
@@ -78,20 +78,20 @@ class ActorVOAdapter extends TypeAdapter<ActorVO> {
 // **************************************************************************
 
 ActorVO _$ActorVOFromJson(Map<String, dynamic> json) => ActorVO(
-      json['adult'] as bool?,
-      json['id'] as int?,
-      (json['known_for'] as List<dynamic>?)
+      adult: json['adult'] as bool?,
+      id: json['id'] as int?,
+      knownFor: (json['known_for'] as List<dynamic>?)
           ?.map((e) => MovieVO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      (json['popularity'] as num?)?.toDouble(),
-      json['name'] as String?,
-      json['profile_path'] as String?,
-      json['known_for_department'] as String?,
-      json['original_name'] as String?,
-      json['cast_id'] as int?,
-      json['character'] as String?,
-      json['credit_id'] as String?,
-      json['order'] as int?,
+      popularity: (json['popularity'] as num?)?.toDouble(),
+      name: json['name'] as String?,
+      profilePath: json['profile_path'] as String?,
+      knownForDepartment: json['known_for_department'] as String?,
+      originalName: json['original_name'] as String?,
+      castId: json['cast_id'] as int?,
+      character: json['character'] as String?,
+      creditId: json['credit_id'] as String?,
+      order: json['order'] as int?,
     );
 
 Map<String, dynamic> _$ActorVOToJson(ActorVO instance) => <String, dynamic>{

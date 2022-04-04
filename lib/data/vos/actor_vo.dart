@@ -56,7 +56,7 @@ class ActorVO {
   @HiveField(11)
   int? order;
 
-  ActorVO(
+  ActorVO({
     this.adult,
     this.id,
     this.knownFor,
@@ -69,7 +69,7 @@ class ActorVO {
     this.character,
     this.creditId,
     this.order,
-  );
+  });
 
   factory ActorVO.fromJson(Map<String, dynamic> json) =>
       _$ActorVOFromJson(json);

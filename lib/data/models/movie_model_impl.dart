@@ -4,9 +4,9 @@ import 'package:movie_app/data/vos/genre_vo.dart';
 import 'package:movie_app/data/vos/movie_vo.dart';
 import 'package:movie_app/network/dataagents/movie_data_agent.dart';
 import 'package:movie_app/network/dataagents/retrofit_data_agent_impl.dart';
-import 'package:movie_app/persistence/daos/actor_dao.dart';
-import 'package:movie_app/persistence/daos/genre_dao.dart';
-import 'package:movie_app/persistence/daos/movie_dao.dart';
+import 'package:movie_app/persistence/daos/impls/actor_dao_impl.dart';
+import 'package:movie_app/persistence/daos/impls/genre_dao_impl.dart';
+import 'package:movie_app/persistence/daos/impls/movie_dao_impl.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class MovieModelImpl extends MovieModel {
@@ -29,9 +29,9 @@ class MovieModelImpl extends MovieModel {
   MovieDataAgent _dataAgent = RetrofitDataAgentImpl();
 
   /// Daos
-  MovieDao mMovieDao = MovieDao();
-  GenreDao mGenreDao = GenreDao();
-  ActorDao mActorDao = ActorDao();
+  MovieDaoImpl mMovieDao = MovieDaoImpl();
+  GenreDaoImpl mGenreDao = GenreDaoImpl();
+  ActorDaoImpl mActorDao = ActorDaoImpl();
 
   /// Home Page State
   List<MovieVO>? mNowPlayingMovies;
