@@ -54,29 +54,40 @@ class MovieDaoImplMock extends MovieDao {
 
   @override
   Stream<List<MovieVO>> getPopularMoviesStream() {
-    // TODO: implement getPopularMoviesStream
-    throw UnimplementedError();
+    return Stream.value(getMockMoviesForTest()
+        .where((element) => element.isPopular ?? false)
+        .toList());
   }
 
   @override
   List<MovieVO> getTopRatedMovies() {
-    // TODO: implement getTopRatedMovies
-    throw UnimplementedError();
+    if (getMockMoviesForTest() != null && (getMockMoviesForTest().isNotEmpty)) {
+      return getMockMoviesForTest()
+          .where((element) => element.isTopRated ?? false)
+          .toList();
+    } else {
+      return [];
+    }
   }
 
   @override
   Stream<List<MovieVO>> getTopRatedMoviesStream() {
-    // TODO: implement getTopRatedMoviesStream
-    throw UnimplementedError();
+    return Stream.value(getMockMoviesForTest()
+        .where((element) => element.isTopRated ?? false)
+        .toList());
   }
 
   @override
   void saveMovies(List<MovieVO> movies) {
-    // TODO: implement saveMovies
+    movies.forEach((movie) {
+      moviesInDatabaseMock[movie.id ?? 0] = movie;
+    });
   }
 
   @override
   void saveSingleMovie(MovieVO? movie) {
-    // TODO: implement saveSingleMovie
+    if(movie != null) {
+      moviesInDatabaseMock[movie.id ?? 0] = movie;
+    }
   }
 }
