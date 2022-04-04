@@ -178,6 +178,18 @@ class MovieVO {
         "";
   }
 
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MovieVO &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          title == other.title;
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode;
+
   @override
   String toString() {
     return 'MovieVO{adult: $adult, backDropPath: $backDropPath,'

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:movie_app/data/vos/movie_vo.dart';
 import 'package:movie_app/persistence/daos/movie_dao.dart';
 
