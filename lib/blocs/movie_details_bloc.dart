@@ -14,7 +14,11 @@ class MovieDetailsBloc extends ChangeNotifier {
   /// Model
   MovieModel mMovieModel = MovieModelImpl();
 
-  MovieDetailsBloc(int movieId) {
+  MovieDetailsBloc(int movieId, [MovieModel? movieModel]) {
+    if(movieModel != null) {
+      mMovieModel = movieModel;
+    }
+
     /// Movie Details
     mMovieModel.getMovieDetails(movieId).then((movie) {
       this.mMovie = movie;
