@@ -13,23 +13,26 @@ class MovieView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => this.onTapMovie(movie?.id ?? 0),
-      child: Container(
-        margin: EdgeInsets.only(right: MARGIN_MEDIUM),
-        width: MOVIE_LIST_ITEM_WIDTH,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
+    return Container(
+      margin: EdgeInsets.only(right: MARGIN_MEDIUM),
+      width: MOVIE_LIST_ITEM_WIDTH,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => this.onTapMovie(movie?.id ?? 0),
+            child: Image.network(
               "$IMAGE_BASE_URL${movie?.posterPath ?? ""}",
               height: 200,
               fit: BoxFit.cover,
             ),
-            SizedBox(
-              height: MARGIN_MEDIUM,
-            ),
-            Text(
+          ),
+          SizedBox(
+            height: MARGIN_MEDIUM,
+          ),
+          GestureDetector(
+            onTap: () => this.onTapMovie(movie?.id ?? 0),
+            child: Text(
               movie?.title ?? "",
               style: TextStyle(
                 color: Colors.white,
@@ -37,27 +40,27 @@ class MovieView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(
-              height: MARGIN_MEDIUM,
-            ),
-            Row(
-              children: [
-                Text(
-                  "8.9",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: TEXT_REGULAR,
-                    fontWeight: FontWeight.bold,
-                  ),
+          ),
+          SizedBox(
+            height: MARGIN_MEDIUM,
+          ),
+          Row(
+            children: [
+              Text(
+                "8.9",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: TEXT_REGULAR,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(
-                  width: MARGIN_MEDIUM,
-                ),
-               RatingView(),
-              ],
-            )
-          ],
-        ),
+              ),
+              SizedBox(
+                width: MARGIN_MEDIUM,
+              ),
+             RatingView(),
+            ],
+          )
+        ],
       ),
     );
   }
