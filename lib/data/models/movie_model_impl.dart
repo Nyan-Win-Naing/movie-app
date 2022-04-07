@@ -19,15 +19,17 @@ class MovieModelImpl extends MovieModel {
     return _singleton;
   }
 
-  MovieModelImpl._internal() {
-    getNowPlayingMoviesFromDatabase();
-    getTopRatedMoviesFromDatabase();
-    getPopularMoviesFromDatabase();
-    getActors(1);
-    getAllActorsFromDatabase();
-    getGenres();
-    getGenresFromDatabase();
-  }
+  // MovieModelImpl._internal() {
+  //   getNowPlayingMoviesFromDatabase();
+  //   getTopRatedMoviesFromDatabase();
+  //   getPopularMoviesFromDatabase();
+  //   getActors(1);
+  //   getAllActorsFromDatabase();
+  //   getGenres();
+  //   getGenresFromDatabase();
+  // }
+
+  MovieModelImpl._internal();
 
   MovieDataAgent mDataAgent = RetrofitDataAgentImpl();
 
@@ -47,6 +49,7 @@ class MovieModelImpl extends MovieModel {
     mActorDao = actorDao;
     mGenreDao = genreDao;
     mDataAgent = dataAgent;
+    print("Movie Data Agent Type:  ${dataAgent.runtimeType}");
   }
 
   /// Home Page State

@@ -26,4 +26,15 @@ class ProductionCountryVO {
   String toString() {
     return 'ProductionCountryVO{iso31661: $iso31661, name: $name}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProductionCountryVO &&
+          runtimeType == other.runtimeType &&
+          iso31661 == other.iso31661 &&
+          name == other.name;
+
+  @override
+  int get hashCode => iso31661.hashCode ^ name.hashCode;
 }

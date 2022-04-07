@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:movie_app/data/vos/actor_vo.dart';
 import 'package:movie_app/data/vos/genre_vo.dart';
 import 'package:movie_app/data/vos/movie_vo.dart';
@@ -138,46 +137,53 @@ List<GenreVO> getMockGenres() {
   ];
 }
 
-List<ActorVO> getMockCredits() {
+List<List<ActorVO>> getMockCredits() {
   return [
-    ActorVO(
-      adult: false,
-      id: 90633,
-      knownForDepartment: "Acting",
-      name: "Gal Gadot",
-      popularity: 67.476,
-      castId: 2,
-      character: "Diana Prince / Wonder Woman",
-      creditId: "595686e4c3a368382e050da4",
-      order: 1,
-      originalName: "Gal Gadot",
-      profilePath: "/plLfB60M5cJrnog8KvAKhI4UJuk.jpg",
-    ),
-    ActorVO(
-      adult: false,
-      id: 1113,
-      knownForDepartment: "Production",
-      name: "Lucinda Syson",
-      popularity: 3.693,
-      // castId: 15,
-      // character: "Steve Trevor",
-      creditId: "5c726ac6c3a3685a32151706",
-      order: 2,
-      originalName: "Lucinda Syson",
-      profilePath: "",
-    ),
-    ActorVO(
-      adult: false,
-      id: 41091,
-      knownForDepartment: "Acting",
-      name: "Kristen Wiig",
-      popularity: 11.596,
-      castId: 12,
-      character: "Barbara Minerva / Cheetah",
-      creditId: "5a975236c3a36861510077f1",
-      order: 3,
-      originalName: "Kristen Wiig",
-      profilePath: "/N517EQh7j4mNl3BStMmjMN6hId.jpg",
-    ),
+    [
+      ActorVO(
+        adult: false,
+        id: 90633,
+        knownForDepartment: "Acting",
+        knownFor: [],
+        name: "Gal Gadot",
+        popularity: 67.476,
+        castId: 2,
+        character: "Diana Prince / Wonder Woman",
+        creditId: "595686e4c3a368382e050da4",
+        order: 1,
+        originalName: "Gal Gadot",
+        profilePath: "/plLfB60M5cJrnog8KvAKhI4UJuk.jpg",
+      ),
+      ActorVO(
+        adult: false,
+        id: 41091,
+        knownForDepartment: "Acting",
+        knownFor: [],
+        name: "Kristen Wiig",
+        popularity: 11.596,
+        castId: 12,
+        character: "Barbara Minerva / Cheetah",
+        creditId: "5a975236c3a36861510077f1",
+        order: 3,
+        originalName: "Kristen Wiig",
+        profilePath: "/N517EQh7j4mNl3BStMmjMN6hId.jpg",
+      ),
+    ],
+    [
+      ActorVO(
+        adult: false,
+        id: 1113,
+        knownForDepartment: "Production",
+        knownFor: [],
+        name: "Lucinda Syson",
+        popularity: 3.693,
+        // castId: 15,
+        // character: "Steve Trevor",
+        creditId: "5c726ac6c3a3685a32151706",
+        order: 2,
+        originalName: "Lucinda Syson",
+        profilePath: "",
+      ),
+    ]
   ];
 }

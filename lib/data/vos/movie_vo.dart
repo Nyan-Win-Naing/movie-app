@@ -185,6 +185,7 @@ class MovieVO {
         "";
   }
 
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -195,6 +196,8 @@ class MovieVO {
 
   @override
   int get hashCode => id.hashCode ^ title.hashCode;
+
+
 
   @override
   String toString() {
