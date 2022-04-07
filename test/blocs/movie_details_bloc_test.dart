@@ -11,11 +11,26 @@ void main() {
     setUp(() {
       movieDetailsBloc = MovieDetailsBloc(1, MovieModelImplMock());
     });
-    
+
     test("Fetch Movie Details Test", () {
       expect(movieDetailsBloc?.mMovie, getMockMoviesForTest().first);
     });
 
+    test("Fetch Creators Test", () {
+      expect(
+        movieDetailsBloc?.mCreatorsList?.contains(getMockCredits().last.first),
+        true,
+      );
+    });
 
+    test(
+      "Fetch Actors Test",
+      () {
+        expect(
+          movieDetailsBloc?.mActorsList?.contains(getMockCredits().first.first),
+          true,
+        );
+      },
+    );
   });
 }
