@@ -16,6 +16,7 @@ import 'package:movie_app/widgets/title_text.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+
 class MovieDetailsPage extends StatelessWidget {
   final int movieId;
 

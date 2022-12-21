@@ -210,9 +210,7 @@ class GenreSectionView extends StatelessWidget {
           child: HorizontalMovieListView(
             onTapMovie: (movieId) => this.onTapMovie(movieId),
             movieList: moviesByGenre,
-            onListEndReached: () {
-
-            },
+            onListEndReached: () {},
           ),
         ),
       ],
